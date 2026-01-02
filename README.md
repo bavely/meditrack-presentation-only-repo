@@ -1,4 +1,4 @@
-# MediTrack Presentation Monorepo
+# MediTrack Presentation Monorepo - https://github.com/bavely/meditrack-presentation-only-repo
 
 This repository bundles the presentation assets for MediTrack—a medication tracking experience composed of a mobile app, a NestJS backend, a computer-vision unwrap service, and a lightweight verification site. Each subproject includes its own docs, but this README offers a quick map of what lives where and how to get started.
 
