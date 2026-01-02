@@ -1,0 +1,111 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2823 >>
+stream
+BT
+/F1 22 Tf
+1 0 0 1 72 760 Tm
+(MediTrack Overview) Tj
+/F1 12 Tf
+1 0 0 1 72 728 Tm
+(MediTrack is a cross-platform medication tracking solution that unites a mobile app, a) Tj
+1 0 0 1 72 710 Tm
+(GraphQL backend, an OpenCV-powered unwrap service, and a lightweight verification site. It) Tj
+1 0 0 1 72 692 Tm
+(guides patients through bottle scanning, keeps schedules organized, and keeps providers in) Tj
+1 0 0 1 72 674 Tm
+(the loop with timely notifications.) Tj
+1 0 0 1 72 656 Tm
+() Tj
+1 0 0 1 72 638 Tm
+(What it is) Tj
+1 0 0 1 72 620 Tm
+(- A complete medication-adherence experience spanning mobile, server, and computer-) Tj
+1 0 0 1 72 602 Tm
+(  vision components.) Tj
+1 0 0 1 72 584 Tm
+(- Patient-friendly flows for registering bottles, scanning labels, and confirming doses.) Tj
+1 0 0 1 72 566 Tm
+(- Provider-ready data through secure GraphQL APIs and optional notifications.) Tj
+1 0 0 1 72 548 Tm
+() Tj
+1 0 0 1 72 530 Tm
+(How it works) Tj
+1 0 0 1 72 512 Tm
+(- Mobile app \\(React Native + Expo\\) walks patients through bottle capture, AI assistant) Tj
+1 0 0 1 72 494 Tm
+(  prompts, reminders, and dashboards.) Tj
+1 0 0 1 72 476 Tm
+(- NestJS GraphQL backend manages authentication, schedules, dose records, and delivers) Tj
+1 0 0 1 72 458 Tm
+(  Expo push or SMS notifications.) Tj
+1 0 0 1 72 440 Tm
+(- OpenCV Flask service unwraps short rotation videos into sharp frames/contact sheets) Tj
+1 0 0 1 72 422 Tm
+(  for OCR-ready ingestion.) Tj
+1 0 0 1 72 404 Tm
+(- Verification site \\(Vite/React\\) handles account confirmation and password resets) Tj
+1 0 0 1 72 386 Tm
+(  against the API.) Tj
+1 0 0 1 72 368 Tm
+() Tj
+1 0 0 1 72 350 Tm
+(Key features) Tj
+1 0 0 1 72 332 Tm
+(- Guided bottle scanning with computer-vision unwrapping for consistent label reads.) Tj
+1 0 0 1 72 314 Tm
+(- Smart reminders tied to personalized schedules and delivery via push or SMS.) Tj
+1 0 0 1 72 296 Tm
+(- AI assistant inside the mobile app to answer medication questions and walk through) Tj
+1 0 0 1 72 278 Tm
+(  next steps.) Tj
+1 0 0 1 72 260 Tm
+(- Secure account lifecycle with email verification, password resets, and role-aware data) Tj
+1 0 0 1 72 242 Tm
+(  access.) Tj
+1 0 0 1 72 224 Tm
+(- Cloud-ready architecture with Prisma/PostgreSQL and S3 storage options for extracted) Tj
+1 0 0 1 72 206 Tm
+(  frames.) Tj
+1 0 0 1 72 188 Tm
+() Tj
+1 0 0 1 72 170 Tm
+(Why customers care) Tj
+1 0 0 1 72 152 Tm
+(- Reduces missed doses by pairing reminders with easy confirmation flows.) Tj
+1 0 0 1 72 134 Tm
+(- Cuts support overhead by guiding patients visually and answering questions in-app.) Tj
+1 0 0 1 72 116 Tm
+(- Provides providers with reliable, timestamped adherence data through a standards-) Tj
+1 0 0 1 72 98 Tm
+(  friendly API.) Tj
+1 0 0 1 72 80 Tm
+(- Deployable in parts or as a whole, fitting into existing care-management stacks.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000003115 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+3185
+%%EOF
