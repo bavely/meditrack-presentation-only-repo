@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "DoseActionType" ADD VALUE IF NOT EXISTS 'PENDING';

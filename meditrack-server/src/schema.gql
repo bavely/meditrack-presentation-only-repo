@@ -1,0 +1,511 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type FieldError {
+  field: String!
+  message: String!
+}
+
+type RefreshPayload {
+  accessToken: String!
+}
+
+type RefreshResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: RefreshPayload
+}
+
+type User {
+  id: ID!
+  aud: String!
+  role: String!
+  email: String!
+  name: String
+  phoneNumber: String
+  prefersPush: Boolean!
+  prefersSms: Boolean!
+  timezone: String!
+  lastSignInAt: DateTime
+  emailVerified: Boolean!
+  phoneVerified: Boolean!
+  emailConfirmedAt: DateTime
+  confirmationSentAt: DateTime
+  phoneConfirmedAt: DateTime
+  phoneConfirmationSentAt: DateTime
+  bedTime: DateTime
+  breakfastTime: DateTime
+  lunchTime: DateTime
+  dinnerTime: DateTime
+  exerciseTime: DateTime
+  gender: String!
+  dob: DateTime!
+  appMetadata: JSONObject
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type LoginResponse {
+  accessToken: String!
+  refreshToken: String!
+
+  """Logged-in user object"""
+  user: User
+}
+
+type AuthResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: LoginResponse
+}
+
+type VerificationsPayload {
+  message: String!
+}
+
+type VerificationsResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: VerificationsPayload
+}
+
+type UserResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: User
+}
+
+type DoseTime {
+  id: ID!
+  scheduleId: String!
+  time: DateTime!
+  scheduledAt: DateTime!
+  dosageQty: Int!
+  dosageUnit: String!
+}
+
+type Schedule {
+  id: ID!
+  medicationId: String!
+  repeatPattern: RepeatPattern!
+  interval: Int!
+  frequency: Int!
+  startDate: DateTime!
+  durationDays: Int!
+  doseTimes: [DoseTime!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Repeat pattern for medication schedule"""
+enum RepeatPattern {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+type Medication {
+  id: ID!
+  name: String!
+  strength: String!
+  quantity: Float!
+  quantityLeft: Float!
+  instructions: String
+  medicationStartDate: DateTime
+  estimatedEndDate: DateTime
+  therapy: String
+  color: String
+  isArchived: Boolean!
+  archivedAt: DateTime
+  isReminderOn: Boolean!
+  userId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  schedule: Schedule
+}
+
+type MedicationResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: Medication
+}
+
+type MedicationListResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: [Medication!]
+}
+
+type MedicationWithSchedule {
+  medication: Medication!
+  schedule: Schedule!
+  doseTimes: [String!]
+}
+
+type MedicationWithScheduleResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: MedicationWithSchedule
+}
+
+type ScheduleResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: Schedule
+}
+
+type DoseAction {
+  id: ID!
+  userId: String!
+  medicationId: String!
+  actionType: DoseActionType!
+  actionTime: DateTime!
+  scheduledTime: DateTime
+  snoozedUntil: DateTime
+  snoozeCount: Float
+  createdAt: DateTime!
+}
+
+"""Status of a scheduled dose"""
+enum DoseActionType {
+  TAKEN
+  SNOOZED
+  SKIPPED
+  PENDING
+  MISSED
+}
+
+type DoseActionResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: DoseAction
+}
+
+type DoseActionListResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: [DoseAction!]
+}
+
+type DoseTimeWithActions {
+  id: ID!
+  scheduleId: String!
+  time: DateTime!
+  scheduledAt: DateTime!
+  dosageQty: Int!
+  dosageUnit: String!
+  doseActions: [DoseAction!]!
+}
+
+type DoseTimeWithActionsListResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: [DoseTimeWithActions!]
+}
+
+type ParsedLabel {
+  name: String!
+  strength: String!
+  quantity: String!
+  instructions: String!
+  therapy: String!
+}
+
+type ParselabelResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: ParsedLabel
+}
+
+type TimingBounds {
+  start: DateTime
+  end: DateTime
+  count: Int
+}
+
+type Timing {
+  frequency: Int
+  frequencyMax: Int
+  period: Float
+  periodMax: Float
+  periodUnit: String
+  timeOfDay: [String!]
+  dayOfWeek: [String!]
+  when: [String!]
+  offset: Int
+  bounds: TimingBounds
+}
+
+type AsNeeded {
+  boolean: Boolean!
+  reason: String
+}
+
+type MaxDosePerPeriodDenominator {
+  value: Float
+  unit: String
+}
+
+type MaxDosePerPeriod {
+  numerator: Float
+  denominator: MaxDosePerPeriodDenominator
+}
+
+type MedicationInstruction {
+  medicationName: String!
+  action: String!
+  doseQuantity: Float!
+  doseUnit: String!
+  route: String!
+  timing: Timing!
+  asNeeded: AsNeeded!
+  maxDosePerPeriod: MaxDosePerPeriod
+  patientInstruction: String
+  indication: String
+}
+
+type InstructionResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: MedicationInstruction
+}
+
+type AiMessage {
+  id: String!
+  role: String!
+  content: String!
+  timestamp: DateTime!
+}
+
+type AiConversation {
+  conversationId: String!
+  title: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  messages: [AiMessage!]!
+}
+
+type AiConversationSummary {
+  conversationId: String!
+  title: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AiConversationResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: AiConversation
+}
+
+type MedicationInfoResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: AiConversation
+}
+
+type AiConversationListResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: [AiConversationSummary!]
+}
+
+type DeleteConversationData {
+  conversationId: String!
+}
+
+type DeleteConversationResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: DeleteConversationData
+}
+
+type Device {
+  id: String!
+  expoPushToken: String!
+  platform: String!
+  appVersion: String
+  notificationsOn: Boolean!
+  createdAt: DateTime!
+  lastSeenAt: DateTime!
+}
+
+type DeviceResponse {
+  success: Boolean!
+  errors: [FieldError!]!
+  data: Device
+}
+
+type Query {
+  getUser: UserResponse!
+  medications: MedicationListResponse!
+  medication(id: String!): MedicationResponse!
+  schedule(medicationId: String!): ScheduleResponse!
+  doseActions(medicationId: String!): DoseActionListResponse!
+  aiConversations: AiConversationListResponse!
+  aiConversation(conversationId: String!): AiConversationResponse!
+}
+
+type Mutation {
+  registerUser(input: CreateUserInput!): AuthResponse!
+  login(email: String!, password: String!): AuthResponse!
+  refreshToken(refreshToken: String!): RefreshResponse!
+  logout: VerificationsResponse!
+  verifyEmail(token: String!): VerificationsResponse!
+  resendVerificationEmail(token: String!): VerificationsResponse!
+  forgotPassword(email: String!): VerificationsResponse!
+  resetPassword(token: String!, password: String!): VerificationsResponse!
+  updateUserPreferences(input: UpdateUserPreferencesInput!): UserResponse!
+  createMedication(input: CreateMedicationInput!): MedicationResponse!
+  updateMedication(input: UpdateMedicationInput!): MedicationResponse!
+  deleteMedication(id: String!): MedicationResponse!
+  registerMedicationWithAi(input: RegisterMedicationAiInput!): MedicationWithScheduleResponse!
+  createSchedule(input: CreateScheduleInput!): ScheduleResponse!
+  updateSchedule(input: UpdateScheduleInput!): ScheduleResponse!
+  deleteSchedule(id: String!): ScheduleResponse!
+  logDoseAction(input: CreateDoseActionInput!): DoseActionResponse!
+  updateDoseAction(input: UpdateDoseActionInput!): DoseActionResponse!
+  deleteDoseAction(id: String!): DoseActionResponse!
+  doseTimesByDate(date: String!): DoseTimeWithActionsListResponse!
+  doseTimesByDateRange(startDate: String!, endDate: String!): DoseTimeWithActionsListResponse!
+  doseActionsByDoseTime(doseTimeId: String!): DoseActionListResponse!
+  parseMedicationLabel(label: String!): ParselabelResponse!
+  structureMedicationInstruction(instruction: String!, medicationName: String): InstructionResponse!
+  getMedicationInfo(prompt: String!, conversationId: String): MedicationInfoResponse!
+  deleteConversation(conversationId: String!): DeleteConversationResponse!
+  registerPushToken(input: RegisterPushTokenInput!): DeviceResponse!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String
+  phoneNumber: String
+  password: String!
+  confirmationSentAt: DateTime
+  gender: String!
+  dob: DateTime!
+  preferences: UpdateUserPreferencesInput
+}
+
+input UpdateUserPreferencesInput {
+  bedTime: DateTime
+  breakfastTime: DateTime
+  lunchTime: DateTime
+  dinnerTime: DateTime
+  exerciseTime: DateTime
+}
+
+input CreateMedicationInput {
+  name: String!
+  strength: String!
+  quantity: Float!
+  instructions: String
+  medicationStartDate: String
+  therapy: String
+  estimatedEndDate: String
+  isArchived: Boolean
+  isReminderOn: Boolean
+}
+
+input UpdateMedicationInput {
+  name: String
+  strength: String
+  quantity: Float
+  instructions: String
+  medicationStartDate: String
+  therapy: String
+  estimatedEndDate: String
+  isArchived: Boolean
+  isReminderOn: Boolean
+  id: ID!
+}
+
+"""Payload for registering a medication with AI assistance."""
+input RegisterMedicationAiInput {
+  name: String!
+  strength: String!
+  instructions: String
+  therapy: String
+
+  """
+  Total doses available. Must cover all scheduled doses (durationDays * times per day).
+  """
+  totalCount: Int!
+
+  """ISO 8601 timestamp for the first scheduled dose."""
+  firstTime: DateTime!
+
+  """
+  ISO 8601 timestamp for the last scheduled dose; must be later than firstTime.
+  """
+  lastTime: DateTime!
+}
+
+input CreateScheduleInput {
+  medicationId: String!
+  repeatPattern: RepeatPattern!
+  startDate: String!
+  durationDays: Int!
+  interval: Int
+  intervalDays: Int
+  times: [DoseTimeInput!]!
+  frequency: Int!
+}
+
+input DoseTimeInput {
+  scheduledAt: String!
+  dosageQty: Int!
+  dosageUnit: String!
+}
+
+input UpdateScheduleInput {
+  medicationId: String
+  repeatPattern: RepeatPattern
+  startDate: String
+  durationDays: Int
+  interval: Int
+  intervalDays: Int
+  times: [DoseTimeInput!]
+  frequency: Int
+  id: ID!
+}
+
+input CreateDoseActionInput {
+  medicationId: String!
+  doseTimeId: String!
+  actionType: DoseActionType!
+  actionTime: String!
+  scheduledTime: String
+  snoozedUntil: String
+  snoozeCount: Float
+}
+
+input UpdateDoseActionInput {
+  medicationId: String
+  doseTimeId: String
+  actionType: DoseActionType
+  actionTime: String
+  scheduledTime: String
+  snoozedUntil: String
+  snoozeCount: Float
+  id: ID!
+}
+
+input RegisterPushTokenInput {
+  token: String!
+  platform: String!
+  appVersion: String
+}

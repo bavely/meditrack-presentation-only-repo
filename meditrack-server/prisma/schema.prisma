@@ -1,0 +1,236 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: [https://pris.ly/d/prisma-schema](https://pris.ly/d/prisma-schema)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum RepeatPattern {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+enum DoseActionType {
+  TAKEN
+  SNOOZED
+  SKIPPED
+  PENDING
+  MISSED
+}
+
+enum NotificationChannel {
+  PUSH
+  SMS
+}
+
+model User {
+  id                      String    @id @default(uuid()) // Auth provider sub
+  aud                     String // User audit (e.g. "authenticated")
+  role                    String // e.g. "authenticated"
+  email                   String    @unique
+  password                String // hashed password, null if using OAuth
+  name                    String?
+  gender                  String
+  dob                     DateTime
+  phoneNumber             String?
+  prefersPush             Boolean   @default(true)
+  prefersSms              Boolean   @default(false)
+  timezone                String    @default("UTC") // timestamp when confirmation email sent
+  lastSignInAt            DateTime? // last login time
+  emailVerified           Boolean   @default(false)
+  phoneVerified           Boolean   @default(false)
+  emailConfirmedAt        DateTime? // timestamp when email confirmed
+  confirmationSentAt      DateTime?
+  phoneConfirmedAt        DateTime?
+  phoneConfirmationSentAt DateTime?
+  bedTime                 DateTime?
+  breakfastTime           DateTime?
+  lunchTime               DateTime?
+  dinnerTime              DateTime?
+  exerciseTime            DateTime?
+  appMetadata             Json? // arbitrary JSON metadata
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  medications         Medication[]
+  notifications       NotificationLog[]
+  doseActions         DoseAction[]
+  refreshTokens       RefreshToken[] // one-to-many
+  emailVerifications  EmailVerificationToken[]
+  passwordResetTokens PasswordResetToken[]
+  devices             Device[]
+  aiConversations     AiConversation[]
+}
+
+model Medication {
+  id            String            @id @default(uuid())
+  userId        String
+  name          String
+  strength      String  // e.g. "500mg", "5 ml" , "100mg" etc.
+  quantity      Int     // Start quentity, e.g. 30 pills
+  quantityLeft  Int     // Remaining quantity, e.g. 20 pills
+  instructions  String? // Instruction to take the medication e.g. take 1 daily with food
+  medicationStartDate DateTime? // First time to take the medication
+  estimatedEndDate DateTime?    // estimate time to run out of the medication and need a refill
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  therapy       String?
+  color         String             @default("#ef4444")
+  isArchived   Boolean            @default(false)
+  archivedAt   DateTime?
+  isReminderOn  Boolean            @default(true)
+  user          User              @relation(fields: [userId], references: [id])
+  schedule      Schedule?
+  doseActions   DoseAction[]
+  notifications NotificationLog[]
+}
+
+model Schedule {
+  id            String        @id @default(uuid())
+  medicationId  String        @unique
+  repeatPattern RepeatPattern @default(DAILY)
+  interval     Int           @default(1) // e.g. every 2 days, every 3 weeks, every 4 months
+  frequency    Int           @default(1) // e.g. 1 time a day, 2 times a week
+  startDate     DateTime      @default(now()) // when the medication schedule starts e.g. 2023-01-01T08:00:00Z when the user starts taking the medication and recorded on meditrack
+                                              // That means if medicationStartDate from medication table is in the future, the schedule should not start yet and startDate should be the same as medicationStartDate but if medicationStartDate is in the past or now, startDate should be now. medicationStartDate is the start date incoming from the user entry from the front-end
+  durationDays  Int // total days or 0 for indefinite
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  medication Medication @relation(fields: [medicationId], references: [id])
+  doseTimes  DoseTime[]
+}
+
+model DoseTime {
+  id         String   @id @default(uuid())
+  scheduleId String
+  time       DateTime @db.Time
+  scheduledAt DateTime @default(now()) // exact date and time when the dose is scheduled to be taken, e.g. 2023-01-01T08:00:00Z
+  dosageQty  Int         // number of units to be taken e.g. 1 tablet, 2 puffs, 2 drops ...etc.
+  dosageUnit String      // unit of the dosage e.g. tablet, puff, drop ...etc.
+  createdAt  DateTime @default(now())
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  doseActions DoseAction[]
+  notifications NotificationLog[]
+
+  @@index([scheduledAt])
+}
+// Note: start date can be different than the actual medication start date "medicationStartDate" from medication table 
+model DoseAction {
+  id           String         @id @default(uuid())
+  userId       String
+  medicationId String
+  actionType   DoseActionType
+  actionTime   DateTime
+  scheduledTime DateTime?
+  snoozedUntil DateTime?
+  snoozeCount  Int       @default(0)
+  createdAt    DateTime       @default(now())
+  doseTimeId   String
+  doseTime     DoseTime       @relation(fields: [doseTimeId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id])
+  medication Medication @relation(fields: [medicationId], references: [id])
+}
+
+model NotificationLog {
+  id            String              @id @default(uuid())
+  userId        String
+  medicationId  String?
+  doseTimeId    String?
+  scheduledTime DateTime
+  sentTime      DateTime?
+  channel       NotificationChannel
+  successful    Boolean             @default(false)
+  errorMessage  String?
+  createdAt     DateTime            @default(now())
+
+  user       User        @relation(fields: [userId], references: [id])
+  medication Medication? @relation(fields: [medicationId], references: [id])
+  doseTime   DoseTime?   @relation(fields: [doseTimeId], references: [id], onDelete: Cascade)
+}
+
+model AiConversation {
+  id        String       @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user     User        @relation(fields: [userId], references: [id])
+  messages AiMessage[]
+
+  @@index([userId, createdAt])
+}
+
+model AiMessage {
+  id             String         @id @default(uuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+
+model Device {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expoPushToken   String   @unique
+  platform        String   // "ios" | "android"
+  appVersion      String?
+  notificationsOn Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  lastSeenAt      DateTime @updatedAt
+}
+
+model JobState {
+  jobName   String   @id
+  lastRunAt DateTime
+}
